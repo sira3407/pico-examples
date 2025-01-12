@@ -3,18 +3,18 @@ add_library(common_stuff INTERFACE)
 
 # note cmake policy is to use absolute paths for interface libraries.
 target_sources(common_stuff INTERFACE
-        ${CMAKE_CURRENT_LIST_DIR}/main.c
-        ${CMAKE_CURRENT_LIST_DIR}/other.c
-        )
+    ${CMAKE_CURRENT_LIST_DIR}/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/other.c
+)
 
 target_compile_definitions(common_stuff INTERFACE
-        A_DEFINE_THAT_IS_SHARED=123
-        )
+    A_DEFINE_THAT_IS_SHARED=123
+)
 
 # can include library dependencies here
 target_link_libraries(common_stuff INTERFACE
-        pico_stdlib
-        )
+    pico_stdlib
+)
 
 # 2 Create the first executable including all the common stuff...
 #    we can set compile definitions for this executable here too. Because
@@ -34,4 +34,27 @@ target_compile_definitions(build_variant2 PRIVATE
         A_DEFINE_THAT_IS_NOT_SHARED=789
         DO_EXTRA)
 pico_add_extra_outputs(build_variant2)
+
+# Makefile for building the project using CMake
+
+# The build directory
+BUILD_DIR = build
+
+# The target executable
+TARGET = my_executable
+
+# Default target
+all: $(BUILD_DIR)/$(TARGET)
+
+# Create the build directory if it doesn't exist and run CMake and Make
+$(BUILD_DIR)/$(TARGET): 
+    mkdir -p $(BUILD_DIR)
+    cd $(BUILD_DIR) && cmake ..
+    cd $(BUILD_DIR) && make
+
+# Clean the build directory
+clean:
+    rm -rf $(BUILD_DIR)
+
+.PHONY: all clean
 
